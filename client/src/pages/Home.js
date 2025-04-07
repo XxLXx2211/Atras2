@@ -23,20 +23,39 @@ const Home = () => {
     const loadData = async () => {
       try {
         setLoading(true);
+        console.log('Iniciando carga de datos...');
 
         // Cargar empresas
+        console.log('Solicitando lista de empresas...');
         const companiesData = await getCompanies();
+        console.log('Empresas recibidas:', companiesData.length);
         setCompanies(companiesData);
 
         // Cargar empleados con puntuaciones
+        console.log('Solicitando empleados con puntuaciones...');
         const employeesData = await getEmployeesWithScores();
-        console.log('Empleados con puntuaciones:', JSON.stringify(employeesData, null, 2));
+        console.log('Empleados con puntuaciones recibidos:', employeesData.length);
+        console.log('Datos de empleados:', JSON.stringify(employeesData, null, 2));
         setEmployees(employeesData);
 
         setError('');
       } catch (err) {
         console.error('Error al cargar datos:', err);
-        setError('Error al cargar los datos. Por favor, intenta de nuevo.');
+        let errorMessage = 'Error al cargar los datos. Por favor, intenta de nuevo.';
+
+        // Mostrar información más detallada sobre el error
+        if (err.response) {
+          console.error('Respuesta de error:', err.response.data);
+          console.error('Estado HTTP:', err.response.status);
+          errorMessage += ` (${err.response.status})`;
+        } else if (err.request) {
+          console.error('No se recibió respuesta del servidor');
+          errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión a internet.';
+        } else {
+          console.error('Error al configurar la solicitud:', err.message);
+        }
+
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
