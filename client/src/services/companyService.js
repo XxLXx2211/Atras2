@@ -1,19 +1,17 @@
 import API from './api';
-import axios from 'axios';
-
-// URL base de la API
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 // Obtener todas las empresas
 export const getCompanies = async () => {
   try {
-    console.log('Llamando a la API en:', `${API_URL}/companies`);
-    const response = await axios.get(`${API_URL}/companies`);
-    console.log('Respuesta de la API (empresas):', response);
+    console.log('Solicitando lista de empresas...');
+    const response = await API.get('/companies');
+    console.log('Respuesta de empresas recibida:', response.data.length, 'empresas');
     return response.data;
   } catch (error) {
-    console.error('Error detallado al obtener empresas:', error.response ? error.response.data : error.message);
     console.error('Error al obtener empresas:', error);
+    console.error('Detalles del error:', error.response ? error.response.data : 'No hay detalles disponibles');
+    console.error('URL de la solicitud:', error.config ? error.config.url : 'URL no disponible');
+    console.error('URL base:', error.config ? error.config.baseURL : 'Base URL no disponible');
     throw error;
   }
 };
@@ -21,10 +19,9 @@ export const getCompanies = async () => {
 // Obtener una empresa por ID
 export const getCompany = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/companies/${id}`);
+    const response = await API.get(`/companies/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error detallado al obtener empresa ${id}:`, error.response ? error.response.data : error.message);
     console.error(`Error al obtener empresa ${id}:`, error);
     throw error;
   }
@@ -34,11 +31,10 @@ export const getCompany = async (id) => {
 export const createCompany = async (companyData) => {
   try {
     console.log('Creando empresa con datos:', companyData);
-    const response = await axios.post(`${API_URL}/companies`, companyData);
+    const response = await API.post('/companies', companyData);
     console.log('Respuesta al crear empresa:', response);
     return response.data;
   } catch (error) {
-    console.error('Error detallado al crear empresa:', error.response ? error.response.data : error.message);
     console.error('Error al crear empresa:', error);
     throw error;
   }
@@ -47,10 +43,9 @@ export const createCompany = async (companyData) => {
 // Actualizar una empresa
 export const updateCompany = async (id, companyData) => {
   try {
-    const response = await axios.put(`${API_URL}/companies/${id}`, companyData);
+    const response = await API.put(`/companies/${id}`, companyData);
     return response.data;
   } catch (error) {
-    console.error(`Error detallado al actualizar empresa ${id}:`, error.response ? error.response.data : error.message);
     console.error(`Error al actualizar empresa ${id}:`, error);
     throw error;
   }
@@ -59,10 +54,9 @@ export const updateCompany = async (id, companyData) => {
 // Eliminar una empresa
 export const deleteCompany = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/companies/${id}`);
+    const response = await API.delete(`/companies/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error detallado al eliminar empresa ${id}:`, error.response ? error.response.data : error.message);
     console.error(`Error al eliminar empresa ${id}:`, error);
     throw error;
   }

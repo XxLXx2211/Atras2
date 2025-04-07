@@ -1,20 +1,17 @@
-import api from './api';
-import axios from 'axios';
-
-// URL base de la API
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+import API from './api';
 
 // Obtener todas las categorías
 export const getCategories = async () => {
   try {
-    console.log('Llamando a la API en:', `${API_URL}/categories`);
-    // Usar axios directamente para depurar
-    const response = await axios.get(`${API_URL}/categories`);
-    console.log('Respuesta de la API:', response);
+    console.log('Solicitando lista de categorías...');
+    const response = await API.get('/categories');
+    console.log('Respuesta de categorías recibida:', response.data.length, 'categorías');
     return response.data;
   } catch (error) {
-    console.error('Error detallado al obtener categorías:', error.response ? error.response.data : error.message);
     console.error('Error al obtener categorías:', error);
+    console.error('Detalles del error:', error.response ? error.response.data : 'No hay detalles disponibles');
+    console.error('URL de la solicitud:', error.config ? error.config.url : 'URL no disponible');
+    console.error('URL base:', error.config ? error.config.baseURL : 'Base URL no disponible');
     throw error;
   }
 };
@@ -22,7 +19,7 @@ export const getCategories = async () => {
 // Obtener una categoría por ID
 export const getCategory = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/categories/${id}`);
+    const response = await API.get(`/categories/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Error al obtener categoría ${id}:`, error);
@@ -33,7 +30,7 @@ export const getCategory = async (id) => {
 // Crear una nueva categoría
 export const createCategory = async (categoryData) => {
   try {
-    const response = await axios.post(`${API_URL}/categories`, categoryData);
+    const response = await API.post('/categories', categoryData);
     return response.data;
   } catch (error) {
     console.error('Error al crear categoría:', error);
@@ -44,7 +41,7 @@ export const createCategory = async (categoryData) => {
 // Actualizar una categoría existente
 export const updateCategory = async (id, categoryData) => {
   try {
-    const response = await axios.put(`${API_URL}/categories/${id}`, categoryData);
+    const response = await API.put(`/categories/${id}`, categoryData);
     return response.data;
   } catch (error) {
     console.error(`Error al actualizar categoría ${id}:`, error);
@@ -55,7 +52,7 @@ export const updateCategory = async (id, categoryData) => {
 // Eliminar una categoría
 export const deleteCategory = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/categories/${id}`);
+    const response = await API.delete(`/categories/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Error al eliminar categoría ${id}:`, error);
@@ -66,7 +63,7 @@ export const deleteCategory = async (id) => {
 // Obtener preguntas por categoría
 export const getQuestionsByCategory = async (categoryId) => {
   try {
-    const response = await axios.get(`${API_URL}/categories/${categoryId}/questions`);
+    const response = await API.get(`/categories/${categoryId}/questions`);
     return response.data;
   } catch (error) {
     console.error(`Error al obtener preguntas de la categoría ${categoryId}:`, error);
