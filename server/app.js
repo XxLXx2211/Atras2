@@ -24,17 +24,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+// Configuración de CORS simplificada para permitir cualquier origen
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? ['https://pdfeedback-client.onrender.com', 'https://evaluacion-semestral-client.onrender.com', 'https://evaluacion-semestral.onrender.com', 'https://pdfeedback-api.onrender.com', 'https://evaluacion-semestral-api.onrender.com']
-    : 'http://localhost:3000',
+  origin: '*',  // Permitir cualquier origen
   credentials: true
 }));
 
 // Imprimir configuración de CORS para depuración
-console.log('CORS configurado para:', process.env.NODE_ENV === 'production'
-  ? ['https://pdfeedback-client.onrender.com', 'https://evaluacion-semestral-client.onrender.com', 'https://evaluacion-semestral.onrender.com']
-  : 'http://localhost:3000');
+console.log('CORS configurado para: Todos los orígenes (*)');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
