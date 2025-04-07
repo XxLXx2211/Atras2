@@ -24,17 +24,36 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+// Configuración de CORS más específica para producción
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? ['https://evaluacion-semestral-client.onrender.com', 'https://*.onrender.com']
+  : ['http://localhost:3000', 'http://localhost:3001'];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? ['https://pdfeedback-client.onrender.com', 'https://evaluacion-semestral-client.onrender.com', 'https://evaluacion-semestral.onrender.com', 'https://pdfeedback-api.onrender.com', 'https://evaluacion-semestral-api.onrender.com']
-    : 'http://localhost:3000',
+  origin: function(origin, callback) {
+    // Permitir solicitudes sin origen (como aplicaciones móviles o curl)
+    if (!origin) return callback(null, true);
+
+    // En producción, verificar si el origen está en la lista de permitidos
+    // o si coincide con el patrón de Render (*.onrender.com)
+    if (process.env.NODE_ENV === 'production') {
+      if (allowedOrigins.includes(origin) || origin.endsWith('.onrender.com')) {
+        return callback(null, true);
+      }
+    } else if (allowedOrigins.includes(origin)) {
+      // En desarrollo, solo permitir los orígenes específicos
+      return callback(null, true);
+    }
+
+    callback(new Error('No permitido por CORS'));
+  },
   credentials: true
 }));
 
 // Imprimir configuración de CORS para depuración
 console.log('CORS configurado para:', process.env.NODE_ENV === 'production'
-  ? ['https://pdfeedback-client.onrender.com', 'https://evaluacion-semestral-client.onrender.com', 'https://evaluacion-semestral.onrender.com']
-  : 'http://localhost:3000');
+  ? 'dominios de Render (*.onrender.com)'
+  : 'http://localhost:3000, http://localhost:3001');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
